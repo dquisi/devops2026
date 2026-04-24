@@ -10,6 +10,17 @@ on:
       - main
       - develop
 
+# Permisos necesarios para el despliegue en GitHub Pages usando OIDC
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Permite solo un despliegue concurrente para evitar conflictos
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   test:
     name: Run Tests
@@ -47,17 +58,28 @@ jobs:
           echo "Todos los archivos requeridos existen."
 
   deploy:
-    name: Deploy
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     # Se ejecuta solo si test y validation terminaron exitosamente
     needs: [test, validation]
     # Restricción: solo ejecutar este job en la rama main
     if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Ejecutar despliegue
-        run: |
-          echo "Ejecutando proceso de publicación..."
-          # Aquí van las tareas de despliegue a GitHub Pages, AWS, Vercel, etc.
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Sube todo el repositorio como artefacto estático (ya que está en la raíz)
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

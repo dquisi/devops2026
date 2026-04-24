@@ -2,17 +2,18 @@
 
 Proyecto web mínimo y funcional desarrollado en JavaScript Vanilla. El proyecto carga datos de un usuario desde una API pública (`https://jsonplaceholder.typicode.com/users/1`) y los muestra en pantalla, con validación de datos y manejo de errores.
 
-## Despliegue en GitHub Pages
+## Despliegue CI/CD y GitHub Pages
 
-Este proyecto está diseñado para ser compatible de forma nativa con **GitHub Pages** sin requerir pasos de construcción (build) adicionales.
+Este proyecto utiliza **GitHub Actions** para automatizar el ciclo de vida del desarrollo:
+- **Ramas `develop` y `main`**: Al hacer push o pull request, se ejecutan las pruebas unitarias y se validan los archivos esenciales del proyecto.
+- **Rama `main`**: Adicionalmente, si las pruebas pasan exitosamente, el pipeline despliega automáticamente el sitio web de forma estática en GitHub Pages.
 
-### Pasos para desplegar:
-1. Crea un repositorio en GitHub y sube todos estos archivos.
-2. Ve a los **Settings** (Configuración) de tu repositorio.
-3. Navega a la sección **Pages** en la barra lateral izquierda.
-4. En **Source** (Fuente), selecciona la rama `main` o `master` y la carpeta `/(root)`.
-5. Guarda los cambios.
-6. En un par de minutos, tu aplicación estará disponible en la URL que GitHub te proporcione (ej. `https://<usuario>.github.io/<repo>/`).
+### ¿Qué debes activar en GitHub para que funcione?
+Para que el job de `deploy` funcione correctamente y publique tu página:
+1. Ve a los **Settings** (Configuración) de tu repositorio en GitHub.
+2. Navega a la sección **Pages** en la barra lateral izquierda.
+3. Bajo el apartado **Build and deployment** > **Source**, selecciona la opción **"GitHub Actions"**.
+4. ¡Listo! Tu próximo merge o push a `main` publicará automáticamente la web en GitHub Pages utilizando el Workflow configurado.
 
 ## Lanzar de forma local
 
