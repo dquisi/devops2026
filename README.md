@@ -15,6 +15,8 @@ Para que el job de `deploy` funcione correctamente y publique tu página:
 3. Bajo el apartado **Build and deployment** > **Source**, selecciona la opción **"GitHub Actions"**.
 4. ¡Listo! Tu próximo merge o push a `main` publicará automáticamente la web en GitHub Pages utilizando el Workflow configurado.
 
+
+
 ## Lanzar de forma local
 
 Puedes abrir el archivo `index.html` directamente en tu navegador, o usar un servidor HTTP local.
