@@ -1,0 +1,63 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Ejecutar pruebas
+        run: npm run test:ci
+
+  validation:
+    name: Validate Required Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar archivos clave
+        run: |
+          # Validar que los archivos requeridos existen
+          test -f index.html || (echo "Error: index.html no existe" && exit 1)
+          test -f src/app.js || test -f app.js || (echo "Error: app.js no existe" && exit 1)
+          test -f src/api.js || (echo "Error: src/api.js no existe" && exit 1)
+          test -f src/validator.js || (echo "Error: src/validator.js no existe" && exit 1)
+          test -f package.json || (echo "Error: package.json no existe" && exit 1)
+          echo "Todos los archivos requeridos existen."
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # Se ejecuta solo si test y validation terminaron exitosamente
+    needs: [test, validation]
+    # Restricción: solo ejecutar este job en la rama main
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Ejecutar despliegue
+        run: |
+          echo "Ejecutando proceso de publicación..."
+          # Aquí van las tareas de despliegue a GitHub Pages, AWS, Vercel, etc.
